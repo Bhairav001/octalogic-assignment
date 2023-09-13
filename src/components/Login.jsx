@@ -43,7 +43,7 @@ const Login = () => {
       <div className="max-w-lg py-12 px-6 bg-white dark:bg-gray-700 shadow-lg rounded-lg">
         <form onSubmit={handleOnSubmit}>
           <div className="mb-4 text-center">
-            <h1 className="text-4xl font-semibold">Sign in to Admin account</h1>
+            <h1 className="text-4xl font-semibold">Sign in to account</h1>
             <p className="text-lg text-gray-600">
               to enjoy all of our cool{" "}
               <span className="text-blue-400">features</span> ✌️
