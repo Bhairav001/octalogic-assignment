@@ -1,79 +1,140 @@
+import React, { useState } from "react";
+// import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
-export default function Login() {
-    return (
-      <>
-        <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
-          <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-            <img
-              className="mx-auto h-10 w-auto"
-              src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
-              alt="Your Company"
-            />
-            <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-              Sign in to your account
-            </h2>
-          </div>
-  
-          <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-            <form className="space-y-6" action="#" method="POST">
-              <div>
-                <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
-                  Email address
-                </label>
-                <div className="mt-2">
-                  <input
-                    id="email"
-                    name="email"
-                    type="email"
-                    autoComplete="email"
-                    required
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  />
-                </div>
-              </div>
-  
-              <div>
-                <div className="flex items-center justify-between">
-                  <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-900">
-                    Password
-                  </label>
-                  <div className="text-sm">
-                    <a href="#" className="font-semibold text-indigo-600 hover:text-indigo-500">
-                      Forgot password?
-                    </a>
-                  </div>
-                </div>
-                <div className="mt-2">
-                  <input
-                    id="password"
-                    name="password"
-                    type="password"
-                    autoComplete="current-password"
-                    required
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  />
-                </div>
-              </div>
-  
-              <div>
-                <button
-                  type="submit"
-                  className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                >
-                  Sign in
-                </button>
-              </div>
-            </form>
-  
-            <p className="mt-10 text-center text-sm text-gray-500">
-              Not a member?{' '}
-              <a href="#" className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">
-                Start a 14 day free trial
-              </a>
+const Login = () => {
+  const [admin, setAdmin] = useState({
+    email: "",
+    password: "",
+  });
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+//   const history = useNavigate();
+
+  const handleOnChange = (e) => {
+    const { name, value } = e.target;
+    setAdmin({
+      ...admin,
+      [name]: value,
+    });
+  };
+
+  const handleOnSubmit = (e) => {
+    e.preventDefault();
+    setLoading(true);
+    axios
+      .post("https://reqres.in/api/login", admin)
+      .then((res) => {
+        localStorage.setItem("isAdminLogin", "true");
+        // Use history.push to navigate instead of navigate from react-router-dom
+        // history.push("/dashboard");
+      })
+      .catch(() => {
+        // Handle login error
+        console.error("Login error");
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-800">
+      <div className="max-w-lg py-12 px-6 bg-white dark:bg-gray-700 shadow-lg rounded-lg">
+        <form onSubmit={handleOnSubmit}>
+          <div className="mb-4 text-center">
+            <h1 className="text-4xl font-semibold">Sign in to Admin account</h1>
+            <p className="text-lg text-gray-600">
+              to enjoy all of our cool{" "}
+              <span className="text-blue-400">features</span> ✌️
             </p>
           </div>
-        </div>
-      </>
-    )
-  }
-  
+          <div className="space-y-4">
+            <div>
+              <label htmlFor="email" className="block text-gray-600">
+                Email address
+              </label>
+              <input
+                type="email"
+                name="email"
+                value={admin.email}
+                onChange={handleOnChange}
+                placeholder="Email address"
+                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-400"
+              />
+            </div>
+            <div>
+              <label htmlFor="password" className="block text-gray-600">
+                Password
+              </label>
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  value={admin.password}
+                  onChange={handleOnChange}
+                  placeholder="Password"
+                  className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-400"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute inset-y-0 right-0 px-3 py-2 focus:outline-none"
+                >
+                  {showPassword ? (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      className="h-5 w-5 text-gray-400"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                      />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M7.286 7.293a4 4 0 005.428 5.414"
+                      />
+                    </svg>
+                  ) : (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      className="h-5 w-5 text-gray-400"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M19.293 4.293a1 1 0 00-1.414 0L12 10.586l-5.293-5.293a1 1 0 00-1.414 1.414L10.586 12l-5.293 5.293a1 1 0 101.414 1.414L12 13.414l5.293 5.293a1 1 0 001.414-1.414L13.414 12l5.293-5.293a1 1 0 000-1.414z"
+                      />
+                    </svg>
+                  )}
+                </button>
+              </div>
+            </div>
+            <div className="mt-10">
+              <button
+                type="submit"
+                className="w-full py-2 px-4 bg-blue-400 text-white rounded-lg hover:bg-blue-500"
+                disabled={loading}
+              >
+                {loading ? "Signing In..." : "Sign in"}
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+export default Login;
